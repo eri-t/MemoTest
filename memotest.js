@@ -37,40 +37,34 @@ const aColores = [
 let aPar = []; //variable para guardar las rutas de las imagenes seleccionadas cada vez
 
 //Determinar el color del reverso aleatoriamente:
-let num = Math.random();
-let max = aColores.length - 1;
-let min = 0;
-let rango = max - min;
-num = num * rango;
-num = Math.floor(num);
-num = num + min;
-
-let color = aColores[num];
-
-// Fisher-Yates (aka Knuth) Shuffle
-function shuffle(array) {
-    var currentIndex = array.length,
-        temporaryValue, randomIndex;
-
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-    return array;
+function randomIndex() {
+    let num = Math.random();
+    let max = aColores.length - 1;
+    let min = 0;
+    let rango = max - min;
+    num = num * rango;
+    num = Math.floor(num);
+    num = num + min;
+    return (num);
 }
 
-var shuffledCards = shuffle(aImgs);
+let cont = 0;
+let color = aColores[randomIndex()];
+jugar();
 
-for (let i = 0; i < shuffledCards.length; i++) {
-    let div = document.createElement('div');
-    div.addEventListener("click", displayCard);
-    div.dataset.imgSrc = 'url(' + shuffledCards[i] + ')';
-    div.style.background = color;
-    main.appendChild(div);
-};
+function jugar() {
+
+
+    var shuffledCards = shuffle(aImgs);
+
+    for (let i = 0; i < shuffledCards.length; i++) {
+        let div = document.createElement('div');
+        div.addEventListener("click", displayCard);
+        div.dataset.imgSrc = 'url(' + shuffledCards[i] + ')';
+        div.style.background = color;
+        main.appendChild(div);
+    }
+}
 
 function displayCard() {
 
@@ -95,6 +89,10 @@ function displayCard() {
                     aMatch[0].style.background = 'white';
                     aMatch[1].style.background = 'white';
                 }, 300);
+                cont += 2;
+                if (cont == 16) {
+                    ganar();
+                }
             } else {
                 setTimeout(() => {
                     aMatch[1].style.background = color;
@@ -111,4 +109,51 @@ function displayCard() {
             }
         }
     }
+}
+
+// Fisher-Yates (aka Knuth) Shuffle
+function shuffle(array) {
+    var currentIndex = array.length,
+        temporaryValue, randomIndex;
+
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
+}
+
+function ganar() {
+
+    let div = document.createElement('div');
+    div.className = 'congrats';
+    document.querySelector('body').appendChild(div);
+
+    let div2 = document.createElement('div');
+    div.appendChild(div2);
+
+    let p = document.createElement('p');
+    p.innerHTML = 'Felicitaciones!!!';
+    div2.appendChild(p);
+
+    p = document.createElement('p');
+    p.innerHTML = 'Has ganado!';
+    div2.appendChild(p);
+
+    let button = document.createElement('button');
+    button.innerHTML = 'Jugar de nuevo';
+    button.onclick = reiniciar;
+    div2.appendChild(button);
+}
+
+function reiniciar() {
+    cont = 0;
+    color = aColores[randomIndex()];
+    document.querySelector('main').innerHTML = '';
+    let congrats = document.querySelector('.congrats');
+    document.querySelector('body').removeChild(congrats);
+    jugar();
 }
