@@ -51,10 +51,9 @@ function randomIndex() {
 let cont = 0;
 let color = aColores[randomIndex()];
 jugar();
+agregarBotones();
 
 function jugar() {
-
-
     var shuffledCards = shuffle(aImgs);
 
     for (let i = 0; i < shuffledCards.length; i++) {
@@ -127,6 +126,8 @@ function shuffle(array) {
 }
 
 function ganar() {
+    let botones = document.querySelector('.botones');
+    document.querySelector('body').removeChild(botones);
 
     let div = document.createElement('div');
     div.className = 'congrats';
@@ -151,9 +152,38 @@ function ganar() {
 
 function reiniciar() {
     cont = 0;
-    color = aColores[randomIndex()];
+    cambiarColor();
     document.querySelector('main').innerHTML = '';
-    let congrats = document.querySelector('.congrats');
-    document.querySelector('body').removeChild(congrats);
+    if (document.querySelector('.congrats')) {
+        let congrats = document.querySelector('.congrats');
+        document.querySelector('body').removeChild(congrats);
+    }
+    if (!document.querySelector('.botones')) {
+        agregarBotones();
+    }
     jugar();
+}
+
+function cambiarColor() {
+    color = aColores[randomIndex()];
+    let aElements = document.querySelectorAll('main > div:not(.matched)');
+    for (let div of aElements) {
+        div.style.background = color;
+    }
+}
+
+function agregarBotones() {
+    let div = document.createElement('div');
+    div.className = 'botones';
+    document.querySelector('body').appendChild(div);
+
+    let button = document.createElement('button');
+    button.innerHTML = 'Cambiar color';
+    button.onclick = cambiarColor;
+    div.appendChild(button);
+
+    button = document.createElement('button');
+    button.innerHTML = 'Reiniciar';
+    button.onclick = reiniciar;
+    div.appendChild(button);
 }
